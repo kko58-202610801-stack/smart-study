@@ -67,6 +67,18 @@
       outline: none;
     }
 
+    .lock-btn {
+      width: 100%;
+      padding: 12px;
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
     /* 메인 앱 컨테이너 */
     .app-container {
       width: 100%;
@@ -345,20 +357,24 @@
     }
   </style>
 
+  <!-- Firebase CDN (Compat) -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 </head>
 <body>
 
+  <!-- 암호잠금 레이어 -->
   <div id="lockScreen">
     <div class="lock-box">
       <h2>🔒 비밀번호 입력</h2>
       <p style="font-size:0.85rem; color:#666; margin-bottom:15px;">접속하려면 4자리 비밀번호를 입력하세요.</p>
-      <input type="password" id="pinInput" maxlength="4" placeholder="••••" oninput="checkPassword()">
-      <div id="lockError" style="color:#ff6b6b; font-size:0.85rem; display:none; margin-top:5px;">비밀번호가 틀렸습니다.</div>
+      <input type="password" id="pinInput" maxlength="4" placeholder="••••" onkeydown="if(event.key === 'Enter') checkPassword()">
+      <button class="lock-btn" onclick="checkPassword()">확인</button>
+      <div id="lockError" style="color:#ff6b6b; font-size:0.85rem; display:none; margin-top:10px;">비밀번호가 틀렸습니다.</div>
     </div>
   </div>
 
+  <!-- 메인 앱 인터페이스 -->
   <div class="app-container" id="mainApp">
     <header>
       <h1>스터디 플래너</h1>
@@ -368,6 +384,7 @@
         <div class="color-btn" style="background: #ffd3b6;" onclick="changeTheme('#ffd3b6', '#fff9f5')"></div>
       </div>
 
+      <!-- 상단 내비게이션 탭 -->
       <div class="tab-menu">
         <button class="tab-btn active" onclick="switchTab('dashboard')">📊 대시보드</button>
         <button class="tab-btn" onclick="switchTab('timer')">⏱️ 스톱워치</button>
@@ -376,6 +393,7 @@
     </header>
 
     <main>
+      <!-- 탭 1: 대시보드 화면 -->
       <div id="tab-dashboard" class="tab-content active">
         <section class="card profile-section">
           <div id="tierBadge" class="tier-badge">등급 계산 중...</div>
@@ -390,6 +408,7 @@
         </section>
       </div>
 
+      <!-- 탭 2: 스톱워치/시간관리 화면 -->
       <div id="tab-timer" class="tab-content">
         <section class="card timer-section">
           <div style="font-size: 0.9rem; color: var(--sub-text);">오늘의 공부 기록</div>
@@ -405,6 +424,7 @@
         </section>
       </div>
 
+      <!-- 탭 3: 할 일 리스트/체크리스트 화면 -->
       <div id="tab-todos" class="tab-content">
         <section class="card">
           <div class="todo-form">
@@ -423,7 +443,8 @@
           </div>
           <hr style="margin: 15px 0; border: 0; border-top: 1px solid var(--border-color);">
           <ul class="todo-list" id="todoList">
-            </ul>
+            <!-- 할 일 동적 주입 -->
+          </ul>
         </section>
       </div>
     </main>
@@ -436,16 +457,14 @@
     function checkPassword() {
       const input = document.getElementById('pinInput').value;
       const errorEl = document.getElementById('lockError');
-      if (input.length === 4) {
-        if (input === PASSWORD_PIN) {
-          document.getElementById('lockScreen').style.display = 'none';
-          document.getElementById('mainApp').style.display = 'flex';
-        } else {
-          errorEl.style.display = 'block';
-          document.getElementById('pinInput').value = '';
-        }
+      
+      if (input === PASSWORD_PIN) {
+        document.getElementById('lockScreen').style.display = 'none';
+        document.getElementById('mainApp').style.display = 'flex';
       } else {
-        errorEl.style.display = 'none';
+        errorEl.style.display = 'block';
+        document.getElementById('pinInput').value = '';
+        document.getElementById('pinInput').focus();
       }
     }
 
@@ -596,4 +615,79 @@
         msgBox.innerText = pokes[Math.floor(Math.random() * pokes.length)];
         msgBox.style.borderLeftColor = "#ff6b6b";
       } else {
-        const cheers =
+        const cheers = [
+          "🚀 최고의 집중력을 발휘하여 한 걸음 더 나아가 보세요!",
+          "✨ 지금의 노력이 모여 눈부신 미래의 당신을 만듭니다.",
+          "👍 시작이 반입니다! 오늘도 멋지게 완수해봅시다.",
+          "🍀 차근차근 해내면 돼요. 당신의 페이스를 믿으세요!"
+        ];
+        msgBox.innerText = cheers[Math.floor(Math.random() * cheers.length)];
+        msgBox.style.borderLeftColor = "var(--primary-color)";
+      }
+    }
+
+    // 스톱워치 로직
+    let timerInterval = null;
+    let secondsElapsed = 0;
+    let isTimerRunning = false;
+
+    function toggleTimer() {
+      const btn = document.getElementById('startTimerBtn');
+      if (isTimerRunning) {
+        clearInterval(timerInterval);
+        isTimerRunning = false;
+        btn.innerText = '공부 시작';
+      } else {
+        isTimerRunning = true;
+        btn.innerText = '일시 정지';
+        document.getElementById('motivationMsg').innerText = "🚀 공부 시작! 최고의 집중력을 발휘해보세요!";
+        
+        timerInterval = setInterval(() => {
+          secondsElapsed++;
+          const hrs = String(Math.floor(secondsElapsed / 3600)).padStart(2, '0');
+          const mins = String(Math.floor((secondsElapsed % 3600) / 60)).padStart(2, '0');
+          const secs = String(secondsElapsed % 60).padStart(2, '0');
+          document.getElementById('timerDisplay').innerText = `${hrs}:${mins}:${secs}`;
+        }, 1000);
+      }
+    }
+
+    function resetTimer() {
+      clearInterval(timerInterval);
+      isTimerRunning = false;
+      secondsElapsed = 0;
+      document.getElementById('timerDisplay').innerText = '00:00:00';
+      document.getElementById('startTimerBtn').innerText = '공부 시작';
+    }
+
+    function saveAlarmTime() {
+      appData.alarmTime = document.getElementById('studyAlarmTime').value;
+      saveData();
+    }
+
+    setInterval(() => {
+      if (!appData.alarmTime) return;
+      const now = new Date();
+      const currentTime = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+      
+      if (currentTime === appData.alarmTime && now.getSeconds() === 0) {
+        if (Notification.permission === "granted") {
+          new Notification("📚 공부할 시간입니다!", { body: "플래너를 열어 오늘 해야 할 일을 확인하세요." });
+        } else {
+          alert("⏰ 공부할 시간입니다! 오늘의 플래너를 체크하세요.");
+        }
+      }
+    }, 1000);
+
+    function changeTheme(primary, bg) {
+      appData.themePrimary = primary;
+      appData.themeBg = bg;
+      saveData();
+    }
+
+    function saveData() {
+      docRef.set(appData, { merge: true });
+    }
+  </script>
+</body>
+</html>
