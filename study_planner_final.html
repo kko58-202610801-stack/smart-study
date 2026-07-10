@@ -26,6 +26,48 @@
       transition: background-color 0.3s ease;
     }
 
+    /* 암호 보호 모달 화면 */
+    #lockScreen {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-color: #f0f8ff;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    }
+
+    .lock-box {
+      background: white;
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      text-align: center;
+      max-width: 320px;
+      width: 80%;
+    }
+
+    .lock-box h2 {
+      margin-top: 0;
+      color: #333;
+      font-size: 1.2rem;
+    }
+
+    .lock-box input[type="password"] {
+      width: 100%;
+      padding: 12px;
+      font-size: 1.2rem;
+      letter-spacing: 10px;
+      text-align: center;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      margin-bottom: 15px;
+      box-sizing: border-box;
+      outline: none;
+    }
+
+    /* 메인 앱 컨테이너 */
     .app-container {
       width: 100%;
       max-width: 480px;
@@ -35,22 +77,20 @@
       display: flex;
       flex-direction: column;
       position: relative;
-      transition: background-color 0.3s ease;
+      display: none; /* 비밀번호 풀리기 전까지 숨김 */
     }
 
     /* 헤더 */
     header {
       background-color: var(--primary-color);
       color: white;
-      padding: 20px;
+      padding: 20px 20px 10px 20px;
       text-align: center;
       position: relative;
-      border-bottom-left-radius: 16px;
-      border-bottom-right-radius: 16px;
     }
 
     header h1 {
-      margin: 0;
+      margin: 0 0 15px 0;
       font-size: 1.3rem;
     }
 
@@ -70,10 +110,47 @@
       cursor: pointer;
     }
 
-    /* 메인 컨텐츠 */
+    /* 상단 탭 메뉴 */
+    .tab-menu {
+      display: flex;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 8px;
+      padding: 4px;
+      margin-top: 10px;
+    }
+
+    .tab-btn {
+      flex: 1;
+      background: none;
+      border: none;
+      color: rgba(255, 255, 255, 0.8);
+      padding: 8px 0;
+      font-size: 0.9rem;
+      cursor: pointer;
+      font-weight: bold;
+      border-radius: 6px;
+      transition: all 0.2s;
+    }
+
+    .tab-btn.active {
+      background: white;
+      color: var(--primary-color);
+    }
+
+    /* 메인 컨텐츠 영역 */
     main {
       padding: 20px;
       flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
       display: flex;
       flex-direction: column;
       gap: 20px;
@@ -87,7 +164,7 @@
       box-shadow: 0 2px 8px rgba(0,0,0,0.02);
     }
 
-    /* 프로필 & 스트릭(등급) 섹션 */
+    /* 프로필 & 등급 */
     .profile-section {
       text-align: center;
     }
@@ -108,27 +185,46 @@
       color: var(--sub-text);
     }
 
-    /* 응원/쓴소리 메시지 */
+    /* 동기부여 메시지 박스 */
+    .message-section {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
     .message-box {
       background-color: rgba(112, 196, 232, 0.15);
       border-left: 4px solid var(--primary-color);
-      padding: 12px;
+      padding: 15px;
       border-radius: 4px;
       font-size: 0.9rem;
       font-weight: 500;
       line-height: 1.4;
+      min-height: 40px;
+      display: flex;
+      align-items: center;
     }
 
-    /* 타이머 (시간 관리) */
+    .msg-refresh-btn {
+      background-color: #f0f0f0;
+      color: #555;
+      font-size: 0.8rem;
+      padding: 6px 12px;
+      border-radius: 6px;
+      align-self: flex-end;
+    }
+
+    /* 타이머 (스톱워치) */
     .timer-section {
       text-align: center;
+      padding: 40px 16px;
     }
 
     .timer-display {
-      font-size: 2.5rem;
+      font-size: 3.2rem;
       font-weight: bold;
       font-family: monospace;
-      margin: 10px 0;
+      margin: 20px 0;
       color: var(--primary-color);
     }
 
@@ -158,19 +254,18 @@
       color: #333;
     }
 
-    /* 알림 설정 UI 추가 */
     .alarm-setting {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-top: 15px;
+      margin-top: 30px;
       font-size: 0.85rem;
       color: var(--sub-text);
       border-top: 1px dashed var(--border-color);
-      padding-top: 10px;
+      padding-top: 15px;
     }
 
-    /* 투두 입력폼 */
+    /* 할 일 관리 */
     .todo-form {
       display: flex;
       flex-direction: column;
@@ -194,7 +289,6 @@
       flex: 1;
     }
 
-    /* 투두 리스트 */
     .todo-list {
       list-style: none;
       padding: 0;
@@ -208,7 +302,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 10px;
+      padding: 12px;
       background-color: #fafafa;
       border: 1px solid var(--border-color);
       border-radius: 8px;
@@ -251,13 +345,21 @@
     }
   </style>
 
-  <!-- Firebase CDN (Compat) -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 </head>
 <body>
 
-  <div class="app-container">
+  <div id="lockScreen">
+    <div class="lock-box">
+      <h2>🔒 비밀번호 입력</h2>
+      <p style="font-size:0.85rem; color:#666; margin-bottom:15px;">접속하려면 4자리 비밀번호를 입력하세요.</p>
+      <input type="password" id="pinInput" maxlength="4" placeholder="••••" oninput="checkPassword()">
+      <div id="lockError" style="color:#ff6b6b; font-size:0.85rem; display:none; margin-top:5px;">비밀번호가 틀렸습니다.</div>
+    </div>
+  </div>
+
+  <div class="app-container" id="mainApp">
     <header>
       <h1>스터디 플래너</h1>
       <div class="theme-picker">
@@ -265,60 +367,98 @@
         <div class="color-btn" style="background: #a8e6cf;" onclick="changeTheme('#a8e6cf', '#f1f9f5')"></div>
         <div class="color-btn" style="background: #ffd3b6;" onclick="changeTheme('#ffd3b6', '#fff9f5')"></div>
       </div>
+
+      <div class="tab-menu">
+        <button class="tab-btn active" onclick="switchTab('dashboard')">📊 대시보드</button>
+        <button class="tab-btn" onclick="switchTab('timer')">⏱️ 스톱워치</button>
+        <button class="tab-btn" onclick="switchTab('todos')">✅ 할 일 기록</button>
+      </div>
     </header>
 
     <main>
-      <!-- 동기부여 & 등급 섹션 -->
-      <section class="card profile-section">
-        <div id="tierBadge" class="tier-badge">등급 계산 중...</div>
-        <div class="streak-info">연속 공부 달성: <strong id="streakCount">0</strong>일</div>
-      </section>
+      <div id="tab-dashboard" class="tab-content active">
+        <section class="card profile-section">
+          <div id="tierBadge" class="tier-badge">등급 계산 중...</div>
+          <div class="streak-info">연속 공부 달성: <strong id="streakCount">0</strong>일</div>
+        </section>
 
-      <!-- 동기부여 메시지 (응원 / 쓴소리) -->
-      <section class="message-box" id="motivationMsg">
-        오늘도 목표를 향해 달려볼까요? 파이팅!
-      </section>
-
-      <!-- 시간 관리 (타이머 및 공부 시작 알림) -->
-      <section class="card timer-section">
-        <div style="font-size: 0.9rem; color: var(--sub-text);">스톱워치</div>
-        <div class="timer-display" id="timerDisplay">00:00:00</div>
-        <div class="timer-controls">
-          <button id="startTimerBtn" onclick="toggleTimer()">공부 시작</button>
-          <button class="secondary" onclick="resetTimer()">리셋</button>
-        </div>
-        <div class="alarm-setting">
-          <span>⏰ 지정 시간 공부 알림:</span>
-          <input type="time" id="studyAlarmTime" onchange="saveAlarmTime()">
-        </div>
-      </section>
-
-      <!-- 할 일 관리 (체크리스트, 우선순위 입력, 과목) -->
-      <section class="card">
-        <div class="todo-form">
-          <div class="input-row">
-            <input type="text" id="subjectInput" placeholder="과목 (예: 수학)" style="width: 30%;">
-            <input type="text" id="todoInput" placeholder="할 일을 입력하세요...">
+        <section class="message-section">
+          <div class="message-box" id="motivationMsg">
+            공부를 시작할 때입니다! 할 일을 끝내봅시다.
           </div>
-          <div class="input-row">
-            <select id="difficultySelect">
-              <option value="상">난이도: 상 (우선 공부)</option>
-              <option value="중">난이도: 중</option>
-              <option value="하">난이도: 하</option>
-            </select>
-            <button onclick="addTodo()" style="flex: 1;">추가</button>
+          <button class="msg-refresh-btn" onclick="triggerManualMessage()">🔄 메시지 변경</button>
+        </section>
+      </div>
+
+      <div id="tab-timer" class="tab-content">
+        <section class="card timer-section">
+          <div style="font-size: 0.9rem; color: var(--sub-text);">오늘의 공부 기록</div>
+          <div class="timer-display" id="timerDisplay">00:00:00</div>
+          <div class="timer-controls">
+            <button id="startTimerBtn" onclick="toggleTimer()">공부 시작</button>
+            <button class="secondary" onclick="resetTimer()">리셋</button>
           </div>
-        </div>
-        <hr style="margin: 15px 0; border: 0; border-top: 1px solid var(--border-color);">
-        <ul class="todo-list" id="todoList">
-          <!-- 할 일 항목이 여기에 동적으로 추가됨 -->
-        </ul>
-      </section>
+          <div class="alarm-setting">
+            <span>⏰ 지정 시간 공부 알림:</span>
+            <input type="time" id="studyAlarmTime" onchange="saveAlarmTime()">
+          </div>
+        </section>
+      </div>
+
+      <div id="tab-todos" class="tab-content">
+        <section class="card">
+          <div class="todo-form">
+            <div class="input-row">
+              <input type="text" id="subjectInput" placeholder="과목 (예: 수학)" style="width: 30%;">
+              <input type="text" id="todoInput" placeholder="할 일을 입력하세요...">
+            </div>
+            <div class="input-row">
+              <select id="difficultySelect">
+                <option value="상">난이도: 상 (우선 공부)</option>
+                <option value="중">난이도: 중</option>
+                <option value="하">난이도: 하</option>
+              </select>
+              <button onclick="addTodo()" style="flex: 1;">추가</button>
+            </div>
+          </div>
+          <hr style="margin: 15px 0; border: 0; border-top: 1px solid var(--border-color);">
+          <ul class="todo-list" id="todoList">
+            </ul>
+        </section>
+      </div>
     </main>
   </div>
 
   <script>
-    // 1. Firebase 설정 및 초기화
+    // [보안 설정] 진입 비밀번호 변경은 아래 숫자 4자리를 수정하세요.
+    const PASSWORD_PIN = "1234";
+
+    function checkPassword() {
+      const input = document.getElementById('pinInput').value;
+      const errorEl = document.getElementById('lockError');
+      if (input.length === 4) {
+        if (input === PASSWORD_PIN) {
+          document.getElementById('lockScreen').style.display = 'none';
+          document.getElementById('mainApp').style.display = 'flex';
+        } else {
+          errorEl.style.display = 'block';
+          document.getElementById('pinInput').value = '';
+        }
+      } else {
+        errorEl.style.display = 'none';
+      }
+    }
+
+    // 탭 전환 기능
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+      
+      event.target.classList.add('active');
+      document.getElementById(`tab-${tabId}`).classList.add('active');
+    }
+
+    // Firebase 연동 설정
     const firebaseConfig = {
       apiKey: "AIzaSyANA-lTFGboIfklqQewlVk49GUQ_Am33aE",
       authDomain: "garim-study-planner.firebaseapp.com",
@@ -332,28 +472,23 @@
     const db = firebase.firestore();
     const docRef = db.collection('students').doc('10801');
 
-    // 앱 데이터 상태
     let appData = {
       todos: [],
       streak: 0,
-      lastActiveDate: '',
       alarmTime: '',
       themePrimary: '#70c4e8',
       themeBg: '#f0f8ff'
     };
 
-    // 알림 권한 요청
     if ("Notification" in window && Notification.permission !== "granted") {
       Notification.requestPermission();
     }
 
-    // 2. Firebase 실시간 데이터 동기화
     docRef.onSnapshot((doc) => {
       if (doc.exists) {
         appData = doc.data();
         renderApp();
       } else {
-        // 문서가 없을 경우 초기 생성
         docRef.set({
           todos: [],
           streak: 1,
@@ -365,30 +500,25 @@
       }
     });
 
-    // 3. UI 렌더링 함수
     function renderApp() {
-      // 테마 적용
       if(appData.themePrimary && appData.themeBg) {
         document.documentElement.style.setProperty('--primary-color', appData.themePrimary);
         document.documentElement.style.setProperty('--bg-color', appData.themeBg);
       }
 
-      // 알림 시간 적용
       if(appData.alarmTime) {
         document.getElementById('studyAlarmTime').value = appData.alarmTime;
       }
 
-      // 등급 & 동기부여 렌더링
       updateStreakAndTier();
       
-      // 투두 리스트 렌더링 (난이도 상 > 중 > 하 순서 정렬)
       const listEl = document.getElementById('todoList');
       listEl.innerHTML = '';
 
       const diffOrder = { '상': 1, '중': 2, '하': 3 };
       const sortedTodos = [...(appData.todos || [])].sort((a, b) => diffOrder[a.difficulty] - diffOrder[b.difficulty]);
 
-      sortedTodos.forEach((todo, idx) => {
+      sortedTodos.forEach((todo) => {
         const originalIndex = appData.todos.findIndex(t => t.id === todo.id);
         const li = document.createElement('li');
         li.className = `todo-item ${todo.completed ? 'completed' : ''}`;
@@ -404,12 +534,10 @@
       });
     }
 
-    // HTML 이스케이프 (보안 처리)
     function escapeHtml(str) {
       return str ? str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;") : '';
     }
 
-    // 4. 할 일 관리 기능
     function addTodo() {
       const subject = document.getElementById('subjectInput').value.trim();
       const title = document.getElementById('todoInput').value.trim();
@@ -417,15 +545,13 @@
 
       if (!subject || !title) return alert('과목과 할 일을 모두 입력해주세요.');
 
-      const newTodo = {
+      appData.todos.push({
         id: Date.now(),
         subject,
         title,
         difficulty,
         completed: false
-      };
-
-      appData.todos.push(newTodo);
+      });
       saveData();
 
       document.getElementById('subjectInput').value = '';
@@ -442,12 +568,8 @@
       saveData();
     }
 
-    // 5. 등급 및 동기부여 메세지 제어
     function updateStreakAndTier() {
-      const today = new Date().toISOString().split('T')[0];
       let streak = appData.streak || 0;
-      
-      // 학업 중심 등급 로직
       let tier = "🌱 예비 습관러";
       if (streak >= 15) tier = "👑 공부의 신";
       else if (streak >= 10) tier = "⚡ 공부 마스터";
@@ -456,8 +578,10 @@
 
       document.getElementById('tierBadge').innerText = tier;
       document.getElementById('streakCount').innerText = streak;
+    }
 
-      // 동기부여 메세지 (미완료 할 일이 있으면 쓴 소리)
+    // 응원 및 쓴소리 수동 갱신 기능
+    function triggerManualMessage() {
       const msgBox = document.getElementById('motivationMsg');
       const total = appData.todos.length;
       const completed = appData.todos.filter(t => t.completed).length;
@@ -466,82 +590,10 @@
         const pokes = [
           "⚠️ 아직 남은 할 일이 있어요! 지금 안 하면 내일의 당신이 고생합니다.",
           "🔥 미루는 습관은 그만! 할 일을 얼른 체크해보세요.",
-          "👀 목표를 다 이루지 못했습니다. 조금만 더 힘내볼까요?"
+          "👀 목표를 다 이루지 못했습니다. 조금만 더 힘내볼까요?",
+          "📢 저기요, 플래너에 체크 안 된 박스들이 울고 있어요!"
         ];
         msgBox.innerText = pokes[Math.floor(Math.random() * pokes.length)];
         msgBox.style.borderLeftColor = "#ff6b6b";
       } else {
-        msgBox.innerText = "✨ " + (isTimerRunning ? "집중하는 당신의 모습이 아름답습니다!" : "공부를 시작할 때입니다! 할 일을 끝내봅시다.");
-        msgBox.style.borderLeftColor = "var(--primary-color)";
-      }
-    }
-
-    // 6. 타이머 및 공부 알림 기능
-    let timerInterval = null;
-    let secondsElapsed = 0;
-    let isTimerRunning = false;
-
-    function toggleTimer() {
-      const btn = document.getElementById('startTimerBtn');
-      if (isTimerRunning) {
-        clearInterval(timerInterval);
-        isTimerRunning = false;
-        btn.innerText = '공부 시작';
-      } else {
-        isTimerRunning = true;
-        btn.innerText = '일시 정지';
-        // 응원 메세지 노출
-        document.getElementById('motivationMsg').innerText = "🚀 공부 시작! 최고의 집중력을 발휘해보세요!";
-        
-        timerInterval = setInterval(() => {
-          secondsElapsed++;
-          const hrs = String(Math.floor(secondsElapsed / 3600)).padStart(2, '0');
-          const mins = String(Math.floor((secondsElapsed % 3600) / 60)).padStart(2, '0');
-          const secs = String(secondsElapsed % 60).padStart(2, '0');
-          document.getElementById('timerDisplay').innerText = `${hrs}:${mins}:${secs}`;
-        }, 1000);
-      }
-    }
-
-    function resetTimer() {
-      clearInterval(timerInterval);
-      isTimerRunning = false;
-      secondsElapsed = 0;
-      document.getElementById('timerDisplay').innerText = '00:00:00';
-      document.getElementById('startTimerBtn').innerText = '공부 시작';
-    }
-
-    function saveAlarmTime() {
-      appData.alarmTime = document.getElementById('studyAlarmTime').value;
-      saveData();
-    }
-
-    // 정각/분 마다 체크하는 지정 시간 알림
-    setInterval(() => {
-      if (!appData.alarmTime) return;
-      const now = new Date();
-      const currentTime = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
-      
-      if (currentTime === appData.alarmTime && now.getSeconds() === 0) {
-        if (Notification.permission === "granted") {
-          new Notification("📚 공부할 시간입니다!", { body: "플래너를 열어 오늘 해야 할 일을 확인하세요." });
-        } else {
-          alert("⏰ 공부할 시간입니다! 오늘의 플래너를 체크하세요.");
-        }
-      }
-    }, 1000);
-
-    // 7. 테마 변경
-    function changeTheme(primary, bg) {
-      appData.themePrimary = primary;
-      appData.themeBg = bg;
-      saveData();
-    }
-
-    // Firebase 저장
-    function saveData() {
-      docRef.set(appData, { merge: true });
-    }
-  </script>
-</body>
-</html>
+        const cheers =
